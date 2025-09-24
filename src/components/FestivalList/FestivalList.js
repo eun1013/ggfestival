@@ -111,9 +111,9 @@ const FestivalList = ({ setSearchWord, searchWord }) => {
     fetcheAllData();
   }, []);
 
-    //필터링 및 정렬
-    // useMemo는 연산 결과를 메모이제이션 불필요한 재계산을 피하는 hook
-    const filteredFestivals = useMemo(() => {
+  //필터링 및 정렬
+  // useMemo는 연산 결과를 메모이제이션 불필요한 재계산을 피하는 hook
+  const filteredFestivals = useMemo(() => {
     // 복사본 만들기
     let currentFiltered = [...allFestivals]; //원본 데이터로 시작
     //1.메인 지역 필터링(동,서,남,북)
@@ -206,16 +206,16 @@ const FestivalList = ({ setSearchWord, searchWord }) => {
   }, [selectedRegion, activeSubRegion, search, showOngoing, sortOrder, allFestivals]);
 
   useEffect(() => {
-  if (regionId) {
-    if (regionDataMap[regionId]) {
-      setSelectedRegion(regionId);
-      setActiveSubRegion(regionDataMap[regionId][0]); // 기본값 '전체'
-    } else {
-      setSelectedRegion('all');
-      setActiveSubRegion('전체');
+    if (regionId) {
+      if (regionDataMap[regionId]) {
+        setSelectedRegion(regionId);
+        setActiveSubRegion(regionDataMap[regionId][0]); // 기본값 '전체'
+      } else {
+        setSelectedRegion('all');
+        setActiveSubRegion('전체');
+      }
     }
-  }
-}, [regionId]);
+  }, [regionId]);
 
   // 메인 셀렉트 박스 변경 핸들러
   const handleRegionChange = (e) => {
@@ -363,18 +363,15 @@ const FestivalList = ({ setSearchWord, searchWord }) => {
             value={selectedRegion}
             onChange={handleRegionChange}
           >
-                      <div className='select-wrapper'>
-            <span>▼</span>
-            </div>
             <option value="all">경기도 전체</option>
             <option value="east">경기 동부권</option>
             <option value="west">경기 서부권</option>
             <option value="south">경기 남부권</option>
             <option value="north">경기 북부권</option>
           </select>
-          
+
           <form className="search-container"
-          onSubmit={(e)=>{e.preventDefault()}}>
+            onSubmit={(e) => { e.preventDefault() }}>
             <input
               type='text'
               placeholder='검색'
@@ -404,7 +401,7 @@ const FestivalList = ({ setSearchWord, searchWord }) => {
         <div className='festival-info-container'>
           <p>
             {search.trim() !== '' && ('검색 결과 ')}
-          <span>{fillteredFestivals.length}개</span>의 축제가 있어요!</p>
+            <span>{fillteredFestivals.length}개</span>의 축제가 있어요!</p>
           <div className='controls-wrapper'>
             <label htmlFor="check">
               <input
@@ -434,7 +431,7 @@ const FestivalList = ({ setSearchWord, searchWord }) => {
           <div className='no-results'>
             <p className='no-search'> "{search}"
               <br />검색 결과가 없어요</p>
-              
+
             <div className='festivalWrap'>
               <h1 className='festivalWrap-name'>이런 축제는 어때요?</h1>
               <FestivalWrap /></div>
