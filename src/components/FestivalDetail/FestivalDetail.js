@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import { data, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { addComment, AllComments, Allfestival, changeComment, deleteComment, fetchComment, getRandomProfile } from "../../utils/FestivalAPI";
-import { IoIosArrowBack } from "react-icons/io";
-import { CiBookmark } from "react-icons/ci";
-import { CiShare2 } from "react-icons/ci";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
 import Dday from "./Dday";
@@ -13,6 +10,7 @@ import CommentCreat from "./CommentCreat";
 import CommentList from "./CommentList";
 import { getUserInfo } from "../../utils/LocalStorage";
 import Weather from "./Weather";
+import OverViewPlus from "./OverViewPlus";
 
 
 const FestivalDetail = ({baseLocate}) => {
@@ -39,7 +37,7 @@ const {contentid} = useParams();
           console.error("축제 데이터 로드 실패");
         } else {
           setFestivalList(data);
-          console.log("선택한 축제:", data);
+        //   console.log("선택한 축제:", data);
         
         //contentid와 일치하는 축제 선택
         const select = data.find(f => f.contentid === contentid);
@@ -78,17 +76,7 @@ const addComments = async (userID, content) => {
     const user = getUserInfo();
     if (!contentid || !userID || !user) return;
 
-    // console.log("=== 댓글 등록 디버깅 ===");
-    // console.log("userID:", userID);      // 유저 아이디 값
-    // console.log("contentid:", contentid); // 축제 contentid
-    // console.log("content:", content);    // 작성한 댓글 내용
-    // console.log("user object:", user);  // 로그인 유저 정보
-
-
     const { data, error } = await addComment(userID, contentid, content);
-
-    // console.log("Supabase data:", data);  // 등록 후 반환 데이터
-    // console.log("Supabase error:", error); // 에러 발생 시 확인
 
     if (!error && data) {
         const newComment = {
@@ -102,7 +90,6 @@ const addComments = async (userID, content) => {
         setComments(prev => [newComment, ...prev]);
     }
 };
-    // console.log(data);
 
 //댓글 수정
     const changeComments = async (id, newContent) =>{
@@ -141,6 +128,8 @@ if(!festival) return <p>Loading...</p>;
 if(loading) return <p>지도 로딩중...</p>;
 if(error) return <p>지도 로딩 실패</p>
 
+
+
     return (
         <div className="detail-wrap">
 
@@ -151,7 +140,15 @@ if(error) return <p>지도 로딩 실패</p>
                 <div className="date-weather">
                     <div className="date-weather-left">
                         <Dday festival={festival}/>
-                        <p className="date">{festival.startdate} ~ {festival.enddate}</p>
+                        <p className="date">
+                        {festival.startdate
+                            .split("-")             
+                            .map((v) => String(Number(v))) 
+                            .join(".")} ~ {festival.enddate
+                            .split("-")
+                            .map((v) => String(Number(v)))
+                            .join(".")}
+                        </p>
                     </div>
                     <div className="date-weather-right">
                         <Weather lat={festival.mapy} lon={festival.mapx} />
@@ -164,16 +161,56 @@ if(error) return <p>지도 로딩 실패</p>
                     <Menu commentCount={comments.length}/>
                 </div>
                 <div className="text1">
-                    <div className="overview">{festival.overview}</div>
+                    <OverViewPlus overview={festival.overview}/>
+                    {/* <div className="overview">{festival.overview}</div> */}
                 </div>
                 <div className="text2">
-                    <p><span>일자</span> {festival.startdate} ~ {festival.enddate}</p>
-                    <p><span>시간</span> {festival.playtime}</p>
-                    <p><span>요금</span> {festival.usetimefestival.replace(/<br\s*\/?>/gi, " ")}</p>
-                    {/* 연령제한이 없는 경우는 없음으로 표시하기 구현 */}
-                    <p><span>연령</span> {festival.agelimit}</p> 
-                    <p><span>주최</span> {festival.telname}</p>
-                    <p><span>문의</span> {festival.tel}</p>
+                    <p>
+                        <span>일자</span> 
+                        <span>
+                            {festival.startdate
+                                .split("-")
+                                .map((v) => String(Number(v)))
+                                .join(".")} ~ {festival.enddate
+                                .split("-")
+                                .map((v) => String(Number(v)))
+                                .join(".")
+                            }</span>
+                    </p>
+                    <p>
+                        <span>시간</span> 
+                        <span>{festival.playtime}</span>    
+                    </p>
+                    <p>
+                        <span>요금</span> 
+                        <span className="content">{festival.usetimefestival.replace(/<br\s*\/?>/gi, " ")}</span>
+                        
+                        </p>
+
+                {/* 방법1 : 연령이 공백일 경우 "-" 하이픈으로 대체 */}
+                    <p>
+                        <span>연령</span> 
+                            <span className="content">
+                                {festival.agelimit && festival.agelimit.trim() !== "" ? festival.agelimit : "-"}
+                        </span>
+
+                {/* 방법2 : 연령이 공백일 경우 아예 연령 항목 삭제(살짝 위아래 여백 생김) */}
+                        {/* <span className="content">
+                            {festival.agelimit && festival.agelimit.trim() !=="" &&(
+                                <p>
+                                    <span>연령</span> 
+                                </p>
+                            )}
+                        </span> */}
+                    </p>
+                    <p>
+                        <span>주최</span> 
+                        <span className="content">{festival.telname}</span>
+                    </p>
+                    <p>
+                        <span>문의</span> 
+                        <span className="content">{festival.tel}</span>
+                    </p>
                     {/* <p>{festival.addr1}</p> */}
                 </div>
                 <hr className="bar2"/>
@@ -183,7 +220,7 @@ if(error) return <p>지도 로딩 실패</p>
                 <div className="map-text-wrap">
                     <div className="map-title">
                         <FaMapMarkerAlt />
-                        <p>{festival.addr1}</p>
+                        <p className="addr">{festival.addr1}</p>
                     </div>
             {/* 길찾기 */}
                     <div className="load-find">
@@ -196,9 +233,10 @@ if(error) return <p>지도 로딩 실패</p>
                         lat: Number(festival.mapy),
                         lng: Number(festival.mapx)
                     }}
-                    style={{ width: "100%", height: "200px" }}
+                    style={{ width: "100%", height: "200px", borderRadius: "0.8rem" }}
                     level={6}
                 >
+                <hr className="bar3"/>
             {/* 각 축제 마커 노출 */}
                 <MapMarker 
                     position={{

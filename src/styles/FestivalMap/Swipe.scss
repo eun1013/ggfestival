@@ -23,7 +23,7 @@
   }
 //지도보기
   &.bottom {
-    bottom: 16px; 
+    bottom: 100px; 
     background-color: var(--primary-500);
     color: var(--gray-white);
     opacity: 0.9;  //넣을지 말지 선택
@@ -36,8 +36,7 @@
 
 //스와이프 영역
 .swipeContent-wrap {
-    padding: 16px;
-    padding-top: 70px;
+    padding: 70px 16px;
     .bar{
         margin: 0 auto;
         margin-bottom: 3rem;
@@ -72,12 +71,15 @@
       .top-text{
         display: flex;
         justify-content: space-between;
+        align-items: center;
       .title {
         @include body-l-style();
         color: var(--gray-900);
+        margin: 0;
       }
-      .bookmark{
+      .bookmark, .swipe-favorite{
         font-size: 25px;
+        flex-shrink: 0
       }
     }
       .text {
