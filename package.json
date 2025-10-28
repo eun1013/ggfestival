@@ -50,6 +50,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://apis.data.go.kr",
-  "homepage": "https://eun1013.github.io/dreamland/"
+  "proxy": "http://apis.data.go.kr"
+
 }
